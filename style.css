@@ -27,9 +27,6 @@ p {
   font-size: 16px;
 }
 
-.points {
-}
-
 .questions {
   display: flex;
   flex-direction: column;
@@ -38,7 +35,7 @@ p {
   margin-bottom: 30px;
 }
 
-#btn {
+.btn {
   font-weight: bold;
   width: 200px;
   height: 50px;
@@ -47,15 +44,10 @@ p {
   border-radius: 3px;
   border: 3px solid #6b7280;
 }
-#btn:hover {
- 
-    background-color: black;
-    border: 3px solid #6b7280;
-    transition: background-color 0.5s, color 0.3s;
-    
-  }
-
-.play-again {
+.btn:hover {
+  background-color: black;
+  border: 3px solid #6b7280;
+  transition: background-color 0.5s, color 0.3s;
 }
 
 #next-btn {
@@ -66,7 +58,6 @@ p {
   border-radius: 3px;
   border: 3px solid #6b7280;
   width: 200px;
-
 }
 #next-btn:hover {
   color: white;
