@@ -26,6 +26,15 @@ h1 {
 p {
   font-size: 16px;
 }
+#start-btn {
+  font-weight: bold;
+  width: 200px;
+  height: 50px;
+  color: white;
+  background-color: #a5b4fc;
+  border-radius: 3px;
+  border: 3px solid #6b7280;
+}
 
 .questions {
   display: flex;
@@ -34,6 +43,9 @@ p {
   gap: 10px;
   margin-bottom: 30px;
 }
+
+
+
 
 .btn {
   font-weight: bold;
@@ -60,6 +72,23 @@ p {
   width: 200px;
 }
 #next-btn:hover {
+  color: white;
+  background-color: #7e22ce;
+  transition: background-color 0.3s, color 0.3s;
+  border: 3px solid #6b7280;
+}
+
+#again-btn {
+  font-weight: bold;
+  width: 200px;
+  height: 50px;
+  color: white;
+  background-color: #a5b4fc;
+  border-radius: 3px;
+  border: 3px solid #6b7280;
+}
+
+#again-btn:hover {
   color: white;
   background-color: #7e22ce;
   transition: background-color 0.3s, color 0.3s;

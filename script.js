@@ -116,10 +116,23 @@ function finishQuiz() {
   document.querySelector(".questions").style.display = "none";
   document.getElementById("next-btn").style.display = "none";
   document.getElementById("points").style.display = "none";
+  document.getElementById("again-btn").style.display = "block";
+}
+// Reset quiz to play again
+function playAgain() {
+  currentQuestionIndex = 0;
+  score = 0;
+  document.getElementById("question-container").innerHTML = "";
+  document.querySelector(".questions").style.display = "block";
+  document.getElementById("points").style.display = "block";
+  document.getElementById("again-btn").style.display = "none";
+
+  fetchQuestions();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   fetchQuestions();
   document.getElementById("start-btn").addEventListener("click", startQuiz);
-  document.getElementById("next-btn", nextQuestion);
+  document.getElementById("next-btn").addEventListener("click", nextQuestion);
+  document.getElementById("again-btn").addEventListener("click", playAgain);
 });
