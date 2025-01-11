@@ -1,7 +1,8 @@
+// what question is displayed and points
 let currentQuestionIndex = 0;
 let questions = [];
 let score = 0;
-
+//randomize the order of answers
 function randomArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -38,7 +39,7 @@ async function fetchQuestions() {
   }
 }
 
-//button to start the quiz
+//start the quiz
 function startQuiz() {
   if (questions.length === 0) {
     fetchQuestions().then(() => {
@@ -80,7 +81,7 @@ function loadQuestion() {
   nextButton.style.display = "none";
 }
 
-//if the questions are right or wrong
+//if the questions answer is right green, if wrong red
 function selectAnswer(option, button) {
   const question = questions[currentQuestionIndex];
   if (option === question.correctAnswer) {
@@ -127,17 +128,13 @@ function finishQuiz() {
   document.getElementById("points").style.display = "none";
   document.getElementById("again-btn").style.display = "block";
 }
-// Reset quiz to play again
-function playAgain() {
-  currentQuestionIndex = 0;
-  score = 0;
-  document.getElementById("points").style.display = "block";
-  document.getElementById("again-btn").style.display = "none";
-  document.querySelector("questions").style.display = "block";
-  fetchQuestions().then(() => {
-    loadQuestion();
-  });
-}
+// Reset quiz to play again, (start-btn),
+// there is probably a better way to do this but i got stuck.
+document.getElementById("again-btn").addEventListener("click", function () {
+  window.location.reload();
+  return false;
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   fetchQuestions();
   document.getElementById("start-btn").addEventListener("click", startQuiz);
