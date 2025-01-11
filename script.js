@@ -2,7 +2,7 @@ let currentQuestionIndex = 0;
 let questions = [];
 let score = 0;
 
-function shuffleArray(array) {
+function randomArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -24,7 +24,7 @@ async function fetchQuestions() {
 
     questions = data.results.map((q) => ({
       text: q.question,
-      options: shuffleArray([...q.incorrect_answers, q.correct_answer]),
+      options: randomArray([...q.incorrect_answers, q.correct_answer]),
       correctAnswer: q.correct_answer,
     }));
 
@@ -34,14 +34,23 @@ async function fetchQuestions() {
     console.log("Something went wrong", error);
     document.getElementById("question-container").innerHTML =
       "<p>Failed to load questions. Please try again later :(</p>";
+    document.getElementById("start-btn").disabled = true;
   }
 }
 
 //button to start the quiz
 function startQuiz() {
-  document.getElementById("start-btn").style.display = "none";
-  document.getElementById("question-container").style.display = "block";
-  loadQuestion();
+  if (questions.length === 0) {
+    fetchQuestions().then(() => {
+      document.getElementById("start-btn").style.display = "none";
+      document.getElementById("question-container").style.display = "block";
+      loadQuestion();
+    });
+  } else {
+    document.getElementById("start-btn").style.display = "none";
+    document.getElementById("question-container").style.display = "block";
+    loadQuestion();
+  }
 }
 
 function loadQuestion() {
@@ -69,9 +78,9 @@ function loadQuestion() {
   }
 
   nextButton.style.display = "none";
-  updateScore();
 }
 
+//if the questions are right or wrong
 function selectAnswer(option, button) {
   const question = questions[currentQuestionIndex];
   if (option === question.correctAnswer) {
@@ -112,7 +121,7 @@ function updateScore() {
 function finishQuiz() {
   document.getElementById(
     "question-container"
-  ).innerHTML = `<h3>Thank you for playing!</h3><p>Your score: ${score} out of ${questions.length}</p>`;
+  ).innerHTML = `<p>Thank you for playing!</p><p>Your score: ${score} out of ${questions.length}</p>`;
   document.querySelector(".questions").style.display = "none";
   document.getElementById("next-btn").style.display = "none";
   document.getElementById("points").style.display = "none";
@@ -122,14 +131,13 @@ function finishQuiz() {
 function playAgain() {
   currentQuestionIndex = 0;
   score = 0;
-  document.getElementById("question-container").innerHTML = "";
-  document.querySelector(".questions").style.display = "block";
   document.getElementById("points").style.display = "block";
   document.getElementById("again-btn").style.display = "none";
-
-  fetchQuestions();
+  document.querySelector("questions").style.display = "block";
+  fetchQuestions().then(() => {
+    loadQuestion();
+  });
 }
-
 document.addEventListener("DOMContentLoaded", () => {
   fetchQuestions();
   document.getElementById("start-btn").addEventListener("click", startQuiz);
