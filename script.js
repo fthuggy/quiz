@@ -2,6 +2,16 @@
 let currentQuestionIndex = 0;
 let questions = [];
 let score = 0;
+
+// Save commonly used DOM elements in global variables
+const questionContainer = document.getElementById("question-container");
+const startButton = document.getElementById("start-btn");
+const questionText = document.getElementById("question-text");
+const nextButton = document.getElementById("next-btn");
+const points = document.getElementById("points");
+const againButton = document.getElementById("again-btn");
+const questionsElement = document.querySelector(".questions");
+
 //randomize the order of answers
 function randomArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -33,24 +43,26 @@ async function fetchQuestions() {
     document.getElementById("start-btn").disabled = false;
   } catch (error) {
     console.log("Something went wrong", error);
-    document.getElementById("question-container").innerHTML =
+    // Use global variables
+    questionContainer.innerHTML =
       "<p>Failed to load questions. Please try again later :(</p>";
-    document.getElementById("start-btn").disabled = true;
+    startButton.disabled = true;
   }
 }
 
 //start the quiz
+// This can be refactored for better readability
 function startQuiz() {
-  if (questions.length === 0) {
-    fetchQuestions().then(() => {
-      document.getElementById("start-btn").style.display = "none";
-      document.getElementById("question-container").style.display = "block";
-      loadQuestion();
-    });
-  } else {
-    document.getElementById("start-btn").style.display = "none";
-    document.getElementById("question-container").style.display = "block";
+  function initializeQuiz() {
+    startButton.style.display = "none";
+    questionContainer.style.display = "block";
     loadQuestion();
+  }
+
+  if (questions.length === 0) {
+    fetchQuestions().then(initializeQuiz);
+  } else {
+    initializeQuiz();
   }
 }
 
@@ -61,9 +73,9 @@ function loadQuestion() {
   }
 
   const question = questions[currentQuestionIndex];
-  const nextButton = document.getElementById("next-btn");
 
-  document.getElementById("question-text").textContent = question.text;
+  // Use global variables
+  questionText.textContent = question.text;
 
   for (let i = 1; i <= 4; i++) {
     const button = document.getElementById(`btn${i}`);
@@ -98,7 +110,7 @@ function selectAnswer(option, button) {
     }
   }
   disableOptions();
-  document.getElementById("next-btn").style.display = "block";
+  nextButton.style.display = "block";
   updateScore();
 }
 
@@ -113,31 +125,32 @@ function nextQuestion() {
   loadQuestion();
 }
 function updateScore() {
-  document
-    .getElementById("points")
-    .querySelector("p").textContent = `Score: ${score}/${
+  // Use global variables
+  points.querySelector("p").textContent = `Score: ${score}/${
     currentQuestionIndex + 1
   }`;
 }
 function finishQuiz() {
-  document.getElementById(
-    "question-container"
-  ).innerHTML = `<p>Thank you for playing!</p><p>Your score: ${score} out of ${questions.length}</p>`;
-  document.querySelector(".questions").style.display = "none";
-  document.getElementById("next-btn").style.display = "none";
-  document.getElementById("points").style.display = "none";
-  document.getElementById("again-btn").style.display = "block";
+  // Use global variables
+  questionContainer.innerHTML = `<p>Thank you for playing!</p><p>Your score: ${score} out of ${questions.length}</p>`;
+  questionsElement.style.display = "none";
+  nextButton.style.display = "none";
+  points.style.display = "none";
+  againButton.style.display = "block";
 }
 // Reset quiz to play again, (start-btn),
 // there is probably a better way to do this but i got stuck.
-document.getElementById("again-btn").addEventListener("click", function () {
+// ALTERNATIVE, you could manually reset all values to their initial state
+// The return false is redunant and can be removed
+againButton.addEventListener("click", function () {
   window.location.reload();
-  return false;
 });
 
+// DOMContentLoaded event is not needed
 document.addEventListener("DOMContentLoaded", () => {
   fetchQuestions();
-  document.getElementById("start-btn").addEventListener("click", startQuiz);
-  document.getElementById("next-btn").addEventListener("click", nextQuestion);
-  document.getElementById("again-btn").addEventListener("click", playAgain);
+  // Use global variables
+  startButton.addEventListener("click", startQuiz);
+  nextButton.addEventListener("click", nextQuestion);
+  againButton.addEventListener("click", playAgain);
 });
