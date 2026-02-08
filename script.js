@@ -2,6 +2,13 @@
 let currentQuestionIndex = 0;
 let questions = [];
 let score = 0;
+// Decode HTML entities (e.g., &#039; → ')
+function decodeHTMLEntities(text) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = text;
+  return txt.value;
+}
+
 //randomize the order of answers
 function randomArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -15,7 +22,7 @@ function randomArray(array) {
 async function fetchQuestions() {
   try {
     const response = await fetch(
-      "https://opentdb.com/api.php?amount=10&category=26&difficulty=easy&type=multiple"
+      "https://opentdb.com/api.php?amount=10&category=26&difficulty=easy&type=multiple",
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status:${response.status}`);
@@ -24,9 +31,12 @@ async function fetchQuestions() {
     const data = await response.json();
 
     questions = data.results.map((q) => ({
-      text: q.question,
-      options: randomArray([...q.incorrect_answers, q.correct_answer]),
-      correctAnswer: q.correct_answer,
+      text: decodeHTMLEntities(q.question),
+      options: randomArray([
+        ...q.incorrect_answers.map(decodeHTMLEntities),
+        decodeHTMLEntities(q.correct_answer),
+      ]),
+      correctAnswer: decodeHTMLEntities(q.correct_answer),
     }));
 
     console.log(questions);
@@ -113,23 +123,18 @@ function nextQuestion() {
   loadQuestion();
 }
 function updateScore() {
-  document
-    .getElementById("points")
-    .querySelector("p").textContent = `Score: ${score}/${
-    currentQuestionIndex + 1
-  }`;
+  document.getElementById("points").querySelector("p").textContent =
+    `Score: ${score}/${currentQuestionIndex + 1}`;
 }
 function finishQuiz() {
-  document.getElementById(
-    "question-container"
-  ).innerHTML = `<p>Thank you for playing!</p><p>Your score: ${score} out of ${questions.length}</p>`;
+  document.getElementById("question-container").innerHTML =
+    `<p>Thank you for playing!</p><p>Your score: ${score} out of ${questions.length}</p>`;
   document.querySelector(".questions").style.display = "none";
   document.getElementById("next-btn").style.display = "none";
   document.getElementById("points").style.display = "none";
   document.getElementById("again-btn").style.display = "block";
 }
-// Reset quiz to play again, (start-btn),
-// there is probably a better way to do this but i got stuck.
+
 document.getElementById("again-btn").addEventListener("click", function () {
   window.location.reload();
   return false;
